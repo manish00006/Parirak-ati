@@ -274,22 +274,30 @@ const App = {
     });
   },
 
-  _showAddGuardianSheet() {
+  _showAddGuardianSheet(editId = null) {
+    const guardians = Store.get('guardians');
+    const existing = editId ? guardians.find(g => g.id === editId) : null;
+
     const overlay = document.createElement('div');
     overlay.className = 'overlay';
     overlay.innerHTML = `
       <div class="bottom-sheet">
         <div class="sheet-handle"></div>
-        <h3 style="margin-bottom:16px;">Add Guardian</h3>
+        <h3 style="margin-bottom:16px;">${existing ? 'Edit Guardian' : 'Add Guardian'}</h3>
         <div class="flex-col gap-4">
-          <div class="input-group"><label class="input-label">Name</label><input class="input-field" id="new-g-name" placeholder="Enter name"></div>
-          <div class="input-group"><label class="input-label">Phone</label><input class="input-field" id="new-g-phone" placeholder="+91 98765 43210" type="tel"></div>
+          <div class="input-group"><label class="input-label">Name</label><input class="input-field" id="new-g-name" placeholder="Enter name" value="${existing ? existing.name : ''}"></div>
+          <div class="input-group"><label class="input-label">Phone</label><input class="input-field" id="new-g-phone" placeholder="+91 98765 43210" type="tel" value="${existing ? existing.phone : ''}"></div>
           <div class="input-group"><label class="input-label">Relationship</label>
             <select class="input-field" id="new-g-relation" style="background:var(--clr-surface);">
-              <option>Mother</option><option>Father</option><option>Relative</option><option>School</option><option>Neighbor</option>
+              <option ${existing && existing.relation === 'Mother' ? 'selected' : ''}>Mother</option>
+              <option ${existing && existing.relation === 'Father' ? 'selected' : ''}>Father</option>
+              <option ${existing && existing.relation === 'Relative' ? 'selected' : ''}>Relative</option>
+              <option ${existing && existing.relation === 'School' ? 'selected' : ''}>School</option>
+              <option ${existing && existing.relation === 'Neighbor' ? 'selected' : ''}>Neighbor</option>
             </select>
           </div>
-          <button class="btn btn-primary w-full" id="save-guardian-btn">Add Guardian</button>
+          <button class="btn btn-primary w-full" id="save-guardian-btn">${existing ? 'Save Changes' : 'Add Guardian'}</button>
+          ${existing ? '<button class="btn w-full" id="delete-guardian-btn" style="color:var(--clr-emergency); border: 1px solid var(--clr-emergency);">Delete Guardian</button>' : ''}
         </div>
       </div>
     `;
@@ -301,14 +309,35 @@ const App = {
       const phone = document.getElementById('new-g-phone').value;
       const relation = document.getElementById('new-g-relation').value;
       if (!name || !phone) { Utils.toast('Fill all fields', 'error'); return; }
-      const guardians = Store.get('guardians');
+      
       const avatars = { Mother: '👩', Father: '👨', Relative: '👤', School: '🏫', Neighbor: '🏘️' };
-      guardians.push({ id: Date.now(), name, relation, phone, avatar: avatars[relation] || '👤', isPrimary: false });
-      Store.set('guardians', guardians);
+      let updatedGuardians = Store.get('guardians');
+      
+      if (existing) {
+        updatedGuardians = updatedGuardians.map(g => g.id === editId ? { ...g, name, phone, relation, avatar: avatars[relation] || '👤' } : g);
+      } else {
+        updatedGuardians.push({ id: Date.now(), name, relation, phone, avatar: avatars[relation] || '👤', isPrimary: false });
+      }
+      
+      Store.set('guardians', updatedGuardians);
       this._renderGuardians();
       overlay.remove();
-      Utils.toast('Guardian added ✅', 'success');
+      Utils.toast(existing ? 'Guardian updated ✅' : 'Guardian added ✅', 'success');
     });
+
+    if (existing) {
+      document.getElementById('delete-guardian-btn').addEventListener('click', () => {
+        const updatedGuardians = Store.get('guardians').filter(g => g.id !== editId);
+        Store.set('guardians', updatedGuardians);
+        this._renderGuardians();
+        overlay.remove();
+        Utils.toast('Guardian deleted 🗑️', 'info');
+      });
+    }
+  },
+
+  _editGuardian(id) {
+    this._showAddGuardianSheet(id);
   },
 
   _renderGuardians() {
@@ -323,14 +352,88 @@ const App = {
           <div class="guardian-relation">${g.relation}</div>
           <div class="guardian-phone">${g.phone}</div>
         </div>
-        <button class="guardian-call-btn" onclick="Utils.makeCall('${g.phone.replace(/\s/g, '')}')">📞</button>
+        <div class="guardian-actions" style="display: flex; gap: 8px;">
+          <button class="guardian-edit-btn" onclick="App._editGuardian(${g.id})" style="width: 44px; height: 44px; border-radius: 50%; background: var(--clr-surface-hover); display: flex; align-items: center; justify-content: center; font-size: 20px;">✏️</button>
+          <button class="guardian-call-btn" onclick="Utils.makeCall('${g.phone.replace(/\s/g, '')}')">📞</button>
+        </div>
       </div>
     `).join('');
   },
 
   // ---- Safety Zones ----
   _setupZones() {
+    document.getElementById('add-zone-btn')?.addEventListener('click', () => {
+      this._showAddZoneSheet();
+    });
     this._renderZones();
+  },
+
+  _showAddZoneSheet(editId = null) {
+    const zones = Store.get('safetyZones');
+    const existing = editId ? zones.find(z => z.id === editId) : null;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.innerHTML = `
+      <div class="bottom-sheet">
+        <div class="sheet-handle"></div>
+        <h3 style="margin-bottom:16px;">${existing ? 'Edit Zone' : 'Add Zone'}</h3>
+        <div class="flex-col gap-4">
+          <div class="input-group"><label class="input-label">Zone Name</label><input class="input-field" id="new-z-name" placeholder="e.g. Grandma's House" value="${existing ? existing.name : ''}"></div>
+          <div class="input-group"><label class="input-label">Radius (meters)</label><input class="input-field" id="new-z-radius" type="number" placeholder="100" value="${existing ? existing.radius : '100'}"></div>
+          <div class="flex-between">
+            <span>Entry Alert</span>
+            <label class="toggle"><input type="checkbox" id="new-z-entry" ${!existing || existing.entryAlert ? 'checked' : ''}><span class="toggle-slider"></span></label>
+          </div>
+          <div class="flex-between">
+            <span>Exit Alert</span>
+            <label class="toggle"><input type="checkbox" id="new-z-exit" ${!existing || existing.exitAlert ? 'checked' : ''}><span class="toggle-slider"></span></label>
+          </div>
+          <button class="btn btn-primary w-full" id="save-zone-btn">${existing ? 'Save Changes' : 'Add Zone'}</button>
+          ${existing ? '<button class="btn w-full" id="delete-zone-btn" style="color:var(--clr-emergency); border: 1px solid var(--clr-emergency);">Delete Zone</button>' : ''}
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+    
+    document.getElementById('save-zone-btn').addEventListener('click', () => {
+      const name = document.getElementById('new-z-name').value;
+      const radius = parseInt(document.getElementById('new-z-radius').value) || 100;
+      const entryAlert = document.getElementById('new-z-entry').checked;
+      const exitAlert = document.getElementById('new-z-exit').checked;
+      
+      if (!name) { Utils.toast('Enter a zone name', 'error'); return; }
+      
+      let updatedZones = Store.get('safetyZones');
+      
+      if (existing) {
+        updatedZones = updatedZones.map(z => z.id === editId ? { ...z, name, radius, entryAlert, exitAlert } : z);
+      } else {
+        const icon = '📍';
+        const color = '#2563EB'; // default blue
+        updatedZones.push({ id: Date.now(), name, radius, lat: 0, lng: 0, icon, color, entryAlert, exitAlert });
+      }
+      
+      Store.set('safetyZones', updatedZones);
+      this._renderZones();
+      overlay.remove();
+      Utils.toast(existing ? 'Zone updated ✅' : 'Zone added ✅', 'success');
+    });
+
+    if (existing) {
+      document.getElementById('delete-zone-btn').addEventListener('click', () => {
+        const updatedZones = Store.get('safetyZones').filter(z => z.id !== editId);
+        Store.set('safetyZones', updatedZones);
+        this._renderZones();
+        overlay.remove();
+        Utils.toast('Zone deleted 🗑️', 'info');
+      });
+    }
+  },
+
+  _editZone(id) {
+    this._showAddZoneSheet(id);
   },
 
   _renderZones() {
@@ -339,11 +442,14 @@ const App = {
     const zones = Store.get('safetyZones');
     list.innerHTML = zones.map(z => `
       <div class="zone-card fade-in">
-        <div class="zone-header">
-          <div class="zone-icon" style="background:${z.color}20;color:${z.color};">${z.icon}</div>
-          <div><div class="zone-name">${z.name}</div><div class="zone-radius text-xs text-secondary">${z.radius}m radius</div></div>
+        <div class="flex-between">
+          <div class="zone-header" style="margin-bottom:0;">
+            <div class="zone-icon" style="background:${z.color}20;color:${z.color};">${z.icon}</div>
+            <div><div class="zone-name">${z.name}</div><div class="zone-radius text-xs text-secondary">${z.radius}m radius</div></div>
+          </div>
+          <button class="guardian-edit-btn" onclick="App._editZone(${z.id})" style="width: 36px; height: 36px; border-radius: 50%; background: var(--clr-surface-hover); display: flex; align-items: center; justify-content: center; font-size: 16px;">✏️</button>
         </div>
-        <div class="zone-alerts">
+        <div class="zone-alerts" style="margin-top: 12px;">
           ${z.entryAlert ? '<span class="zone-alert-tag">✅ Entry Alert</span>' : ''}
           ${z.exitAlert ? '<span class="zone-alert-tag">🚪 Exit Alert</span>' : ''}
         </div>
