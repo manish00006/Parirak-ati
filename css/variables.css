@@ -1,0 +1,138 @@
+/* ============================================
+   PariRakṣati Design System — Variables
+   ============================================ */
+
+:root {
+  /* ---- Colors: Light Mode ---- */
+  --clr-emergency: #DC2626;
+  --clr-emergency-light: #FEE2E2;
+  --clr-emergency-glow: rgba(220, 38, 38, 0.35);
+  --clr-safe: #16A34A;
+  --clr-safe-light: #DCFCE7;
+  --clr-safe-glow: rgba(22, 163, 74, 0.30);
+  --clr-tracking: #2563EB;
+  --clr-tracking-light: #DBEAFE;
+  --clr-tracking-glow: rgba(37, 99, 235, 0.30);
+  --clr-warning: #F59E0B;
+  --clr-warning-light: #FEF3C7;
+  --clr-accent: #7C3AED;
+  --clr-accent-light: #EDE9FE;
+
+  /* Surfaces */
+  --clr-bg: #F1F5F9;
+  --clr-surface: #FFFFFF;
+  --clr-surface-elevated: #FFFFFF;
+  --clr-surface-hover: #F8FAFC;
+  --clr-border: #E2E8F0;
+  --clr-border-light: #F1F5F9;
+
+  /* Text */
+  --clr-text: #0F172A;
+  --clr-text-secondary: #64748B;
+  --clr-text-tertiary: #94A3B8;
+  --clr-text-inverse: #FFFFFF;
+
+  /* ---- Typography ---- */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-xs: 0.6875rem;   /* 11px */
+  --font-sm: 0.8125rem;   /* 13px */
+  --font-base: 0.9375rem; /* 15px */
+  --font-md: 1.0625rem;   /* 17px */
+  --font-lg: 1.25rem;     /* 20px */
+  --font-xl: 1.5rem;      /* 24px */
+  --font-2xl: 1.875rem;   /* 30px */
+  --font-3xl: 2.25rem;    /* 36px */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --lh-tight: 1.2;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.65;
+
+  /* ---- Spacing ---- */
+  --sp-1: 0.25rem;  /* 4px */
+  --sp-2: 0.5rem;   /* 8px */
+  --sp-3: 0.75rem;  /* 12px */
+  --sp-4: 1rem;     /* 16px */
+  --sp-5: 1.25rem;  /* 20px */
+  --sp-6: 1.5rem;   /* 24px */
+  --sp-8: 2rem;     /* 32px */
+  --sp-10: 2.5rem;  /* 40px */
+  --sp-12: 3rem;    /* 48px */
+  --sp-16: 4rem;    /* 64px */
+
+  /* ---- Radii ---- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* ---- Shadows ---- */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.12);
+  --shadow-emergency: 0 0 30px rgba(220, 38, 38, 0.4);
+  --shadow-safe: 0 0 20px rgba(22, 163, 74, 0.3);
+
+  /* ---- Transitions ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+  --dur-fast: 150ms;
+  --dur-normal: 250ms;
+  --dur-slow: 400ms;
+
+  /* ---- Z-index ---- */
+  --z-base: 1;
+  --z-nav: 100;
+  --z-modal: 500;
+  --z-overlay: 800;
+  --z-emergency: 1000;
+  --z-toast: 1100;
+
+  /* ---- Layout ---- */
+  --nav-height: 64px;
+  --header-height: 56px;
+  --max-width: 480px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ============================================
+   Dark Mode
+   ============================================ */
+[data-theme="dark"] {
+  --clr-emergency: #EF4444;
+  --clr-emergency-light: rgba(239, 68, 68, 0.15);
+  --clr-emergency-glow: rgba(239, 68, 68, 0.45);
+  --clr-safe: #22C55E;
+  --clr-safe-light: rgba(34, 197, 94, 0.15);
+  --clr-safe-glow: rgba(34, 197, 94, 0.35);
+  --clr-tracking: #3B82F6;
+  --clr-tracking-light: rgba(59, 130, 246, 0.15);
+  --clr-tracking-glow: rgba(59, 130, 246, 0.35);
+  --clr-warning: #FBBF24;
+  --clr-warning-light: rgba(251, 191, 36, 0.15);
+  --clr-accent: #A78BFA;
+  --clr-accent-light: rgba(167, 139, 250, 0.15);
+
+  --clr-bg: #0B0B14;
+  --clr-surface: #161625;
+  --clr-surface-elevated: #1E1E32;
+  --clr-surface-hover: #1E1E32;
+  --clr-border: #2A2A40;
+  --clr-border-light: #1E1E32;
+
+  --clr-text: #E8EAF0;
+  --clr-text-secondary: #94A3B8;
+  --clr-text-tertiary: #64748B;
+  --clr-text-inverse: #0F172A;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.6);
+  --shadow-emergency: 0 0 40px rgba(239, 68, 68, 0.5);
+  --shadow-safe: 0 0 25px rgba(34, 197, 94, 0.35);
+}

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="description" content="PariRakṣati - AI-Powered Child Safety App. Every Child Deserves Protection.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>PariRakṣati — Child Safety</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icons/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icons/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/screens.css">
+</head>
+<body>
+<div id="app">
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ==================== SPLASH ==================== -->
+  <div id="screen-splash" class="screen splash-screen">
+    <div class="splash-logo"><img src="assets/icons/logo.png" alt="PariRakṣati"></div>
+    <div class="splash-title">PariRakṣati</div>
+    <div class="splash-tagline">Every Child Deserves Protection</div>
+  </div>
+
+  <!-- ==================== LOGIN ==================== -->
+  <div id="screen-login" class="screen login-screen">
+    <div class="screen-content">
+      <div class="login-header">
+        <div class="login-logo"><img src="assets/icons/logo.png" alt="Logo" style="width:80px;height:80px;margin:0 auto;"></div>
+        <h1>Welcome</h1>
+        <p class="text-secondary">Sign in to protect your child</p>
+      </div>
+
+      <!-- Phone Step -->
+      <div id="login-phone-step" class="login-form">
+        <div class="account-type-selector">
+          <button class="account-type-btn selected" data-type="parent">
+            <span class="type-icon">👨‍👩‍👧</span>
+            <span class="type-label">Parent</span>
+          </button>
+          <button class="account-type-btn" data-type="child">
+            <span class="type-icon">👧</span>
+            <span class="type-label">Child</span>
+          </button>
+          <button class="account-type-btn" data-type="guardian">
+            <span class="type-icon">🛡️</span>
+            <span class="type-label">Guardian</span>
+          </button>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Phone Number</label>
+          <div class="phone-input-row">
+            <input class="phone-prefix input-field" value="+91" readonly>
+            <input class="input-field phone-input" id="phone-input" type="tel" placeholder="98765 43210" maxlength="12" inputmode="numeric">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg w-full" id="send-otp-btn">Send OTP</button>
+      </div>
+
+      <!-- OTP Step -->
+      <div id="login-otp-step" class="login-form hidden">
+        <h3 class="text-center" style="margin-bottom:8px;">Enter OTP</h3>
+        <p class="text-secondary text-center text-sm" style="margin-bottom:24px;">We sent a 6-digit code to your phone</p>
+        <div class="otp-row">
+          <input class="otp-box" type="tel" maxlength="1" inputmode="numeric">
+          <input class="otp-box" type="tel" maxlength="1" inputmode="numeric">
+          <input class="otp-box" type="tel" maxlength="1" inputmode="numeric">
+          <input class="otp-box" type="tel" maxlength="1" inputmode="numeric">
+          <input class="otp-box" type="tel" maxlength="1" inputmode="numeric">
+          <input class="otp-box" type="tel" maxlength="1" inputmode="numeric">
+        </div>
+        <button class="btn btn-primary btn-lg w-full" id="verify-otp-btn" style="margin-top:24px;">Verify & Continue</button>
+        <p class="text-xs text-secondary text-center" style="margin-top:12px;">Didn't receive? <a href="#" style="color:var(--clr-tracking);font-weight:600;">Resend OTP</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== HOME ==================== -->
+  <div id="screen-home" class="screen home-screen">
+    <div class="home-header">
+      <div class="avatar avatar-lg">👧</div>
+      <div class="child-info">
+        <div class="child-name">Shidu</div>
+        <div class="status-indicators">
+          <div class="indicator"><span class="indicator-dot" id="gps-indicator" style="background:var(--clr-safe);"></span> GPS</div>
+          <div class="indicator"><span class="indicator-dot" id="net-indicator" style="background:var(--clr-safe);"></span> Net</div>
+          <div class="indicator">🔋 <span id="battery-level">78</span>%</div>
+        </div>
+      </div>
+      <div id="safety-status" class="status-pill status-pill-safe">
+        <span class="badge-dot badge-dot-safe"></span> Safe
+      </div>
+    </div>
+
+    <div class="screen-content">
+      <!-- SOS Section -->
+      <div class="sos-section">
+        <button class="sos-button" id="sos-btn">
+          <span class="sos-icon">🚨</span>
+          <span class="sos-label">SOS</span>
+        </button>
+        <p class="sos-hint">Tap for emergency alert</p>
+      </div>
+
+      <!-- SOS Countdown Overlay -->
+      <div id="sos-countdown" class="sos-countdown hidden">
+        <div class="countdown-number" id="countdown-num">3</div>
+        <div class="countdown-text">Activating Emergency Mode...</div>
+        <button class="btn btn-outline btn-lg countdown-cancel" id="cancel-sos" style="color:white;border-color:rgba(255,255,255,0.4);">Cancel</button>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <button class="quick-action" id="qa-safe">
+          <div class="quick-action-icon qa-safe">✅</div>
+          <span class="quick-action-label">I Am Safe</span>
+        </button>
+        <button class="quick-action" id="qa-track">
+          <div class="quick-action-icon qa-track">📍</div>
+          <span class="quick-action-label">Track Me</span>
+        </button>
+        <button class="quick-action" id="qa-call">
+          <div class="quick-action-icon qa-call">📞</div>
+          <span class="quick-action-label">Call Parent</span>
+        </button>
+        <button class="quick-action" id="qa-fake">
+          <div class="quick-action-icon qa-fake">📱</div>
+          <span class="quick-action-label">Fake Call</span>
+        </button>
+        <button class="quick-action" id="qa-route">
+          <div class="quick-action-icon qa-route">🛣️</div>
+          <span class="quick-action-label">Safe Route</span>
+        </button>
+      </div>
+
+      <!-- AI Monitoring Status -->
+      <div class="card" style="margin-top:var(--sp-4);">
+        <div class="flex-between" style="margin-bottom:var(--sp-3);">
+          <h4>🤖 AI Monitoring</h4>
+          <span class="badge badge-safe">Active</span>
+        </div>
+        <p class="text-sm text-secondary">Route monitoring, speed alerts, and geofence tracking are active. Your child is protected.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TRACKING ==================== -->
+  <div id="screen-tracking" class="screen tracking-screen">
+    <div class="screen-content">
+      <div class="flex-between" style="margin-bottom:var(--sp-4);">
+        <h2>📍 Live Tracking</h2>
+        <button class="btn btn-sm btn-primary" id="refresh-location">Refresh</button>
+      </div>
+
+      <div class="map-container">
+        <iframe id="map-frame" class="map-placeholder" style="width:100%;height:100%;border:0;"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=72.8727,19.0710,72.8827,19.0810&layer=mapnik&marker=19.0760,72.8777"
+          loading="lazy"></iframe>
+      </div>
+
+      <div class="tracking-stats" style="margin-top:var(--sp-4);">
+        <div class="stat-card">
+          <div class="stat-icon">📍</div>
+          <div class="stat-value" id="current-location-text">19.0760°N, 72.8777°E</div>
+          <div class="stat-label">Current Location</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏃</div>
+          <div class="stat-value">0 km/h</div>
+          <div class="stat-label">Speed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏠</div>
+          <div class="stat-value">~0.2 km</div>
+          <div class="stat-label">Distance to Home</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⏱️</div>
+          <div class="stat-value">~3 min</div>
+          <div class="stat-label">ETA to Home</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:var(--sp-4);">
+        <h4 style="margin-bottom:var(--sp-3);">🗺️ Today's Route</h4>
+        <div class="flex-col gap-2">
+          <div class="flex-between text-sm"><span>🏠 Home</span><span class="text-secondary">7:30 AM</span></div>
+          <div style="border-left:2px dashed var(--clr-border);height:16px;margin-left:7px;"></div>
+          <div class="flex-between text-sm"><span>🏫 School</span><span class="text-secondary">8:00 AM</span></div>
+          <div style="border-left:2px dashed var(--clr-border);height:16px;margin-left:7px;"></div>
+          <div class="flex-between text-sm"><span>📍 Current</span><span class="badge badge-safe">In School Zone</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== GUARDIANS ==================== -->
+  <div id="screen-guardians" class="screen">
+    <div class="screen-content">
+      <div class="flex-between" style="margin-bottom:var(--sp-4);">
+        <h2>👥 Guardians</h2>
+        <button class="btn btn-sm btn-primary" id="add-guardian-btn">+ Add</button>
+      </div>
+      <div id="guardians-list" class="flex-col gap-3">
+        <div class="guardian-card"><div class="avatar">👩</div><div class="guardian-info"><div class="guardian-name">Aarti Panchwate</div><div class="guardian-relation">Mother</div><div class="guardian-phone">+91 98765 43210</div></div><button class="guardian-call-btn" onclick="Utils.makeCall('+919876543210')">📞</button></div>
+        <div class="guardian-card"><div class="avatar">👨</div><div class="guardian-info"><div class="guardian-name">Rajesh Panchwate</div><div class="guardian-relation">Father</div><div class="guardian-phone">+91 98765 43211</div></div><button class="guardian-call-btn" onclick="Utils.makeCall('+919876543211')">📞</button></div>
+        <div class="guardian-card"><div class="avatar">👵</div><div class="guardian-info"><div class="guardian-name">Sunita Deshpande</div><div class="guardian-relation">Grandmother</div><div class="guardian-phone">+91 98765 43212</div></div><button class="guardian-call-btn" onclick="Utils.makeCall('+919876543212')">📞</button></div>
+        <div class="guardian-card"><div class="avatar">🏫</div><div class="guardian-info"><div class="guardian-name">Delhi Public School</div><div class="guardian-relation">School</div><div class="guardian-phone">+91 11 2345 6789</div></div><button class="guardian-call-btn" onclick="Utils.makeCall('+911123456789')">📞</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SAFETY ZONES ==================== -->
+  <div id="screen-safety-zones" class="screen">
+    <div class="screen-content">
+      <div class="flex-between" style="margin-bottom:var(--sp-4);">
+        <h2>🛡️ Safety Zones</h2>
+      </div>
+      <div id="zones-list" class="flex-col gap-3">
+        <div class="zone-card"><div class="zone-header"><div class="zone-icon" style="background:rgba(22,163,74,0.12);color:#16A34A;">🏠</div><div><div class="zone-name">Home</div><div class="zone-radius text-xs text-secondary">100m radius</div></div></div><div class="zone-alerts"><span class="zone-alert-tag">✅ Entry Alert</span><span class="zone-alert-tag">🚪 Exit Alert</span></div></div>
+        <div class="zone-card"><div class="zone-header"><div class="zone-icon" style="background:rgba(37,99,235,0.12);color:#2563EB;">🏫</div><div><div class="zone-name">School</div><div class="zone-radius text-xs text-secondary">200m radius</div></div></div><div class="zone-alerts"><span class="zone-alert-tag">✅ Entry Alert</span><span class="zone-alert-tag">🚪 Exit Alert</span></div></div>
+        <div class="zone-card"><div class="zone-header"><div class="zone-icon" style="background:rgba(124,58,237,0.12);color:#7C3AED;">📚</div><div><div class="zone-name">Tuition</div><div class="zone-radius text-xs text-secondary">50m radius</div></div></div><div class="zone-alerts"><span class="zone-alert-tag">🚪 Exit Alert</span></div></div>
+        <div class="zone-card"><div class="zone-header"><div class="zone-icon" style="background:rgba(245,158,11,0.12);color:#F59E0B;">🎪</div><div><div class="zone-name">Playground</div><div class="zone-radius text-xs text-secondary">150m radius</div></div></div><div class="zone-alerts"><span class="zone-alert-tag">✅ Entry Alert</span><span class="zone-alert-tag">🚪 Exit Alert</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== EMERGENCY ==================== -->
+  <div id="screen-emergency" class="screen emergency-screen">
+    <div class="emergency-header">
+      <div class="emergency-icon">🚨</div>
+      <div class="emergency-title">EMERGENCY MODE</div>
+      <div class="emergency-subtitle">Help is on the way. Stay calm.</div>
+    </div>
+    <div class="emergency-recording">
+      <div class="rec-dot"></div>
+      <span>Recording Audio...</span>
+    </div>
+    <div class="emergency-actions">
+      <button class="emergency-btn" id="em-call-police"><span class="emergency-btn-icon">🚔</span>Call Police</button>
+      <button class="emergency-btn" id="em-call-parent"><span class="emergency-btn-icon">👨‍👩‍👧</span>Call Parent</button>
+      <button class="emergency-btn" id="em-share-loc"><span class="emergency-btn-icon">📍</span>Share Location</button>
+      <button class="emergency-btn" id="em-siren" data-active="false"><span class="emergency-btn-icon">🔊</span>Siren</button>
+    </div>
+    <button class="stop-emergency" id="em-stop">⛔ STOP EMERGENCY</button>
+  </div>
+
+  <!-- ==================== FAKE CALL ==================== -->
+  <div id="screen-fake-call" class="screen fake-call-screen">
+    <div class="fake-call-avatar" id="fake-caller-avatar">👩</div>
+    <div class="fake-call-name" id="fake-caller-name">Mom ❤️</div>
+    <div class="fake-call-status" id="fake-call-status">Incoming Call...</div>
+    <div class="fake-call-timer hidden" id="fake-call-duration">00:00</div>
+    <div class="fake-call-actions" id="fake-call-incoming">
+      <button class="call-action-btn call-decline" id="fake-decline">✕</button>
+      <button class="call-action-btn call-accept" id="fake-accept">📞</button>
+    </div>
+    <div class="fake-call-actions hidden" id="fake-call-active">
+      <button class="call-action-btn call-decline" id="fake-end">✕</button>
+    </div>
+  </div>
+
+  <!-- ==================== SETTINGS ==================== -->
+  <div id="screen-settings" class="screen settings-screen">
+    <div class="screen-content">
+      <h2 style="margin-bottom:var(--sp-4);">⚙️ Settings</h2>
+
+      <div class="settings-group">
+        <div class="settings-group-title">Safety Features</div>
+        <div class="settings-list">
+          <div class="setting-item"><div class="setting-icon" style="background:var(--clr-accent-light);color:var(--clr-accent);">🎤</div><div class="setting-info"><div class="setting-label">Voice Detection</div><div class="setting-desc">Listen for emergency keywords</div></div><label class="toggle"><input type="checkbox" id="toggle-voice"><span class="toggle-slider"></span></label></div>
+          <div class="setting-item"><div class="setting-icon" style="background:var(--clr-warning-light);color:var(--clr-warning);">📳</div><div class="setting-info"><div class="setting-label">Shake Detection</div><div class="setting-desc">Shake phone to trigger SOS</div></div><label class="toggle"><input type="checkbox" id="toggle-shake"><span class="toggle-slider"></span></label></div>
+          <div class="setting-item"><div class="setting-icon" style="background:var(--clr-emergency-light);color:var(--clr-emergency);">⏻</div><div class="setting-info"><div class="setting-label">Power Button SOS</div><div class="setting-desc">Press power 5 times for SOS</div></div><label class="toggle"><input type="checkbox" id="toggle-power-sos"><span class="toggle-slider"></span></label></div>
+          <div class="setting-item"><div class="setting-icon" style="background:var(--clr-emergency-light);color:var(--clr-emergency);">⏺️</div><div class="setting-info"><div class="setting-label">Auto Recording</div><div class="setting-desc">Record audio in emergency</div></div><label class="toggle"><input type="checkbox" id="toggle-auto-record"><span class="toggle-slider"></span></label></div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">Tracking</div>
+        <div class="settings-list">
+          <div class="setting-item"><div class="setting-icon" style="background:var(--clr-tracking-light);color:var(--clr-tracking);">📍</div><div class="setting-info"><div class="setting-label">Location Tracking</div><div class="setting-desc">Enable GPS tracking</div></div><label class="toggle"><input type="checkbox" id="toggle-location"><span class="toggle-slider"></span></label></div>
+          <div class="setting-item"><div class="setting-icon" style="background:var(--clr-safe-light);color:var(--clr-safe);">🔋</div><div class="setting-info"><div class="setting-label">Low Power Mode</div><div class="setting-desc">Reduce tracking frequency</div></div><label class="toggle"><input type="checkbox" id="toggle-lowpower"><span class="toggle-slider"></span></label></div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">Appearance</div>
+        <div class="settings-list">
+          <div class="setting-item"><div class="setting-icon" style="background:var(--clr-tracking-light);color:var(--clr-tracking);">🌙</div><div class="setting-info"><div class="setting-label">Dark Mode</div><div class="setting-desc">Easier on the eyes</div></div><label class="toggle"><input type="checkbox" id="toggle-dark"><span class="toggle-slider"></span></label></div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">Account</div>
+        <div class="settings-list">
+          <div class="setting-item" style="cursor:pointer;" id="logout-btn"><div class="setting-icon" style="background:var(--clr-emergency-light);color:var(--clr-emergency);">🚪</div><div class="setting-info"><div class="setting-label" style="color:var(--clr-emergency);">Log Out</div></div></div>
+        </div>
+      </div>
+
+      <p class="text-xs text-secondary text-center" style="margin-top:var(--sp-6);">PariRakṣati v1.0 • Made with ❤️ for child safety</p>
+    </div>
+  </div>
+
+  <!-- ==================== BOTTOM NAVIGATION ==================== -->
+  <nav id="bottom-nav" class="bottom-nav hidden">
+    <button class="nav-item active" data-screen="home"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-item" data-screen="tracking"><span class="nav-icon">📍</span><span class="nav-label">Tracking</span></button>
+    <button class="nav-item" data-screen="guardians"><span class="nav-icon">👥</span><span class="nav-label">Guardians</span></button>
+    <button class="nav-item" data-screen="safety-zones"><span class="nav-icon">🛡️</span><span class="nav-label">Zones</span></button>
+    <button class="nav-item" data-screen="settings"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+  </nav>
+</div>
+
+<!-- Scripts (load order matters) -->
+<script src="js/store.js"></script>
+<script src="js/router.js"></script>
+<script src="js/utils.js"></script>
+<script src="services/location.js"></script>
+<script src="services/audio.js"></script>
+<script src="services/voice-trigger.js"></script>
+<script src="services/ai-monitor.js"></script>
+<script src="services/emergency.js"></script>
+<script src="services/fake-call.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
