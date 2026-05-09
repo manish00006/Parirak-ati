@@ -272,6 +272,7 @@ const App = {
     document.getElementById('add-guardian-btn')?.addEventListener('click', () => {
       this._showAddGuardianSheet();
     });
+    this._renderGuardians();
   },
 
   _showAddGuardianSheet(editId = null) {
