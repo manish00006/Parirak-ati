@@ -17,12 +17,19 @@ const Store = {
       gpsActive: true,
       internetActive: true
     },
-    guardians: JSON.parse(localStorage.getItem('pr-guardians') || 'null') || [
-      { id: 1, name: 'Ashlesha Panchwate', relation: 'Mother', phone: '+91 96532 07169', avatar: '👩', isPrimary: true },
-      { id: 2, name: 'Manish Panchwate', relation: 'Father', phone: '+91 70214 17839', avatar: '👨', isPrimary: true },
-      { id: 3, name: 'Sunita Deshpande', relation: 'Grandmother', phone: '+91 98765 43212', avatar: '👵', isPrimary: false },
-      { id: 4, name: 'Delhi Public School', relation: 'School', phone: '+91 11 2345 6789', avatar: '🏫', isPrimary: false }
-    ],
+    guardians: (() => {
+      let g = JSON.parse(localStorage.getItem('pr-guardians') || 'null');
+      // If old default is found, wipe it out so Ashlesha & Manish become default
+      if (g && g.length > 0 && g[0].name === 'Aarti Panchwate') {
+        g = null; 
+      }
+      return g || [
+        { id: 1, name: 'Ashlesha Panchwate', relation: 'Mother', phone: '+91 96532 07169', avatar: '👩', isPrimary: true },
+        { id: 2, name: 'Manish Panchwate', relation: 'Father', phone: '+91 70214 17839', avatar: '👨', isPrimary: true },
+        { id: 3, name: 'Sunita Deshpande', relation: 'Grandmother', phone: '+91 98765 43212', avatar: '👵', isPrimary: false },
+        { id: 4, name: 'Delhi Public School', relation: 'School', phone: '+91 11 2345 6789', avatar: '🏫', isPrimary: false }
+      ];
+    })(),
     safetyZones: JSON.parse(localStorage.getItem('pr-zones') || 'null') || [
       { id: 1, name: 'Home', icon: '🏠', lat: 19.0760, lng: 72.8777, radius: 100, entryAlert: true, exitAlert: true, color: '#16A34A' },
       { id: 2, name: 'School', icon: '🏫', lat: 19.0820, lng: 72.8850, radius: 200, entryAlert: true, exitAlert: true, color: '#2563EB' },
