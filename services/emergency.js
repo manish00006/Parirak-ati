@@ -62,17 +62,16 @@ const EmergencyMode = {
     const mapsLink = `https://maps.google.com/?q=${lat},${lng}`;
     const message = `🚨 EMERGENCY! ${childName} needs help! Location: ${mapsLink} Time: ${new Date().toLocaleString('en-IN')}`;
 
-    // Join all primary contacts with commas for group SMS
-    const primaryPhones = guardians
-      .filter(g => g.isPrimary)
+    // Join all contacts with commas for group SMS
+    const allPhones = guardians
       .map(g => g.phone.replace(/\s/g, ''))
       .join(',');
 
-    if (primaryPhones) {
-      Utils.sendSMS(primaryPhones, message);
+    if (allPhones) {
+      Utils.sendSMS(allPhones, message);
       Utils.toast('Emergency SMS triggered via your SMS app.', 'error');
     } else {
-      Utils.toast('No primary guardians found to send SMS.', 'error');
+      Utils.toast('No guardians found to send SMS.', 'error');
     }
   },
 
