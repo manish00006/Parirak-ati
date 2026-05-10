@@ -62,15 +62,17 @@ const EmergencyMode = {
     const mapsLink = `https://maps.google.com/?q=${lat},${lng}`;
     const message = `🚨 EMERGENCY! ${childName} needs help! Location: ${mapsLink} Time: ${new Date().toLocaleString('en-IN')}`;
 
-    if (!Utils.isOnline()) {
-      // Offline: try SMS for primary contacts
-      guardians.filter(g => g.isPrimary).forEach(g => {
-        Utils.sendSMS(g.phone.replace(/\s/g, ''), message);
-      });
-      Utils.toast('Emergency SMS sent (offline mode)', 'info');
+    // Join all primary contacts with commas for group SMS
+    const primaryPhones = guardians
+      .filter(g => g.isPrimary)
+      .map(g => g.phone.replace(/\s/g, ''))
+      .join(',');
+
+    if (primaryPhones) {
+      Utils.sendSMS(primaryPhones, message);
+      Utils.toast('Emergency SMS triggered via your SMS app.', 'error');
     } else {
-      // Online: would send via Firebase, show toast for now
-      Utils.toast('Emergency alerts sent to all guardians!', 'error');
+      Utils.toast('No primary guardians found to send SMS.', 'error');
     }
   },
 
