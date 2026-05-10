@@ -18,8 +18,8 @@ const Store = {
       internetActive: true
     },
     guardians: JSON.parse(localStorage.getItem('pr-guardians') || 'null') || [
-      { id: 1, name: 'Aarti Panchwate', relation: 'Mother', phone: '+91 98765 43210', avatar: '👩', isPrimary: true },
-      { id: 2, name: 'Rajesh Panchwate', relation: 'Father', phone: '+91 98765 43211', avatar: '👨', isPrimary: true },
+      { id: 1, name: 'Ashlesha Panchwate', relation: 'Mother', phone: '+91 96532 07169', avatar: '👩', isPrimary: true },
+      { id: 2, name: 'Manish Panchwate', relation: 'Father', phone: '+91 70214 17839', avatar: '👨', isPrimary: true },
       { id: 3, name: 'Sunita Deshpande', relation: 'Grandmother', phone: '+91 98765 43212', avatar: '👵', isPrimary: false },
       { id: 4, name: 'Delhi Public School', relation: 'School', phone: '+91 11 2345 6789', avatar: '🏫', isPrimary: false }
     ],
