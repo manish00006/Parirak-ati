@@ -1,7 +1,7 @@
 // ============================================
 // PariRakṣati — Service Worker (Offline Support)
 // ============================================
-const CACHE_NAME = 'pariraksati-v4';
+const CACHE_NAME = 'pariraksati-v5';
 const ASSETS = [
   '/',
   '/index.html',
