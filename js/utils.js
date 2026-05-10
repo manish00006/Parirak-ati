@@ -109,7 +109,8 @@ const Utils = {
   // SMS fallback (opens SMS app on mobile)
   sendSMS(phone, message) {
     const encoded = encodeURIComponent(message);
-    window.open(`sms:${phone}?body=${encoded}`, '_blank');
+    // Use window.location.href instead of window.open to avoid popup blockers in async callbacks
+    window.location.href = `sms:${phone}?body=${encoded}`;
   },
 
   // Make phone call
